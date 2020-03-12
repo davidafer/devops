@@ -2,6 +2,7 @@ pipeline {
    agent any
 
    stages {
+
       stage('Limpando a workspace') {
          steps {
             sh 'pwd'
@@ -27,7 +28,7 @@ pipeline {
          }
       }
 
-      stage('Solicitando autorização de deploy') {
+      /*stage('Solicitando autorização de deploy') {
          steps {
              script {
                slackSend(color: 'warning', message: "Para aprovar este deploy clique aqui: ${JOB_URL} - [Janela de 5 minutos]", channel: 'CV90P6FGD')
@@ -36,12 +37,28 @@ pipeline {
                }
             }
          }
+      }*/
+
+      stage('Notificando início do deploy') {
+           steps {
+               script {
+                 slackSend(color: 'warning', message: "O deploy está sendo realizado em produção", channel: 'CV90P6FGD')
+              }
+           }
       }
 
       stage(Deploy) {
          steps {
             sh 'scp -o StrictHostKeyChecking=no -i /home/vagrant/devops target/alura-forum.war vagrant@192.168.50.10:/home/vagrant/alura-forum.war'
             sh "ssh -o StrictHostKeyChecking=no -i /home/vagrant/devops vagrant@192.168.50.10 'sudo mv /home/vagrant/alura-forum.war /var/lib/tomcat8/webapps/alura-forum.war'"
+         }
+      }
+
+      stage('Notificando fim do deploy') {
+         steps {
+             script {
+               slackSend(color: 'warning', message: "O deploy foi finalizado", channel: 'CV90P6FGD')
+            }
          }
       }
    }
