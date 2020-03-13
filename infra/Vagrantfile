@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
     db_config.vm.provision "ansible" do |ansible|
 			ansible.playbook = "playbooks/db.yml"
 		end
-    
+
 	end
 
   config.vm.define :web do |web_config|
@@ -22,9 +22,23 @@ Vagrant.configure("2") do |config|
     end
 
     web_config.vm.provision "ansible" do |ansible|
-    			ansible.playbook = "playbooks/web.yml"
-    		end
-    end
+			ansible.playbook = "playbooks/web.yml"
+		end
+
+  end
+
+  config.vm.define :web02 do |web_config|
+      web_config.vm.network "private_network", ip: "192.168.50.13"
+      web_config.vm.hostname = 'web-02'
+      web_config.vm.provider :virtualbox do |vb|
+        vb.name = "web-02"
+      end
+
+      web_config.vm.provision "ansible" do |ansible|
+  			ansible.playbook = "playbooks/web.yml"
+  		end
+
+   end
 
     config.vm.define :ci do |ci_config|
      ci_config.vm.network "private_network", ip: "192.168.50.12"
@@ -33,9 +47,18 @@ Vagrant.configure("2") do |config|
        vb.name = "ci"
      end
 
-     ci_config.vm.provision "ansible" do |ansible|
-     			ansible.playbook = "playbooks/ci.yml"
-     		end
-     end
+		ci_config.vm.provision "ansible" do |ansible|
+			ansible.playbook = "playbooks/ci.yml"
+		end
+	end
+
+  config.vm.define :nginx do |nginx_config|
+  		nginx_config.vm.network "private_network", ip: "192.168.50.15"
+        nginx_config.vm.hostname = "nginx"
+  		nginx_config.vm.provision "ansible" do |ansible|
+  			ansible.playbook = "playbooks/nginx.yml"
+  		end
+  	end
 
 end
+

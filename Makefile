@@ -1,5 +1,29 @@
-scp/web:
-    ssh -i infra/ssh-keys/devops vagrant@192.168.50.10
+IP_WEB=192.168.50.10
+IP_WEB_02=192.168.50.13
+NGINX=192.168.50.15
+CI=192.168.50.12
+SSH=ssh -o StrictHostKeyChecking=no -i infra/ssh-keys/devops
+PROJECT_FOLDER=~/Desktop/docker8721
 
-sh 'scp -o StrictHostKeyChecking=no -i /home/vagrant/devops target/alura-forum.war vagrant@192.168.50.10:/home/vagrant/alura-forum.war'
-sh "ssh -o StrictHostKeyChecking=no -i /home/vagrant/devops vagrant@192.168.50.10 'sudo mv /home/vagrant/alura-forum.war /var/lib/tomcat8/webapps/alura-forum.war'"
+ssh/web:
+	 $(SSH) vagrant@$(IP_WEB)
+
+ssh/web-02:
+	$(SSH) vagrant@$(IP_WEB_02)
+
+ssh/nginx:
+	$(SSH) vagrant@$(NGINX)
+
+ssh/ci:
+	$(SSH) vagrant@$(CI)
+
+
+maven/clean:
+	cd $(PROJECT_FOLDER) && mvn clean
+
+maven/package: maven/clean
+	cd $(PROJECT_FOLDER) && mvn package -DskipTests
+
+
+vagrant/up:
+	cd infra && vagrant up

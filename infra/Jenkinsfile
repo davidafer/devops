@@ -42,7 +42,7 @@ pipeline {
       stage('Notificando início do deploy') {
            steps {
                script {
-                 slackSend(color: 'warning', message: "O deploy está sendo realizado em produção", channel: 'CV90P6FGD')
+                 slackSend(color: 'warning', message: "O deploy está sendo realizado em produção. Acompanhe em: ${JOB_URL}", channel: 'CV90P6FGD')
               }
            }
       }
@@ -57,7 +57,7 @@ pipeline {
       stage('Notificando fim do deploy') {
          steps {
              script {
-               slackSend(color: 'warning', message: "O deploy foi finalizado", channel: 'CV90P6FGD')
+               slackSend(color: 'warning', message: "O processo de deploy foi finalizado", channel: 'CV90P6FGD')
             }
          }
       }
